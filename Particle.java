@@ -3,6 +3,7 @@ public class Particle {
     private Velocity v;
     private double fitness;
     private double[] pbest;
+    private static int lr; // learning rate? C1 and C2
 
     public Particle(Position p, Velocity v, double fitness){
         this.p = p;
@@ -33,7 +34,8 @@ public class Particle {
     // current += v
 
     public void updatePosition(double gbest){
-        this.v = this.v + (C1 * )
+        // do this4
+        this.v = this.v + (lr * )
     }
 
 

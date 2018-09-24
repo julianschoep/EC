@@ -23,4 +23,13 @@ public class Position {
         this.coordinates[i] = coord;
     }
 
+    public double[] subtract(double[] subtractor){
+        double result[];
+        result = this.coordinates;
+        for(int i= 0; i <= this.coordinates.length-i; i++){
+            result[i] = this.coordinates[i] + subtractor[i]
+        }
+        return result;
+    }
+
 }
