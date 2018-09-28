@@ -63,10 +63,20 @@ public class player25 implements ContestSubmission
 
         // Calculate and save fitness per particle
         for (int i = 0; i < n_particles; i++){
-            Position particlePosition = particles[i].getPosition();
+
+        	// Get current particle position
+        	Position particlePosition = particles[i].getPosition();
             double[] particleCoordinates = particlePosition.getCoordinates();
+
+            // evaluate position with fitness functino
             double fitness = (double) evaluation_.evaluate(particleCoordinates);
+
+            // set evaluation to current fitness and assign best if this fitness is better than previous best
             particles[i].setFitness(fitness);
+            if (fitness > particles[i].getBestFitness()){
+            	particles[i].setBestFitness(fitness);
+            	particles[i].setBestPosition(particleCoordinates);
+			}
 
             if (fitness > bestGlobalFitness){
                 bestGlobalFitness = fitness;
@@ -75,6 +85,16 @@ public class player25 implements ContestSubmission
 
         }
 
+        while(evals<evaluations_limit_){
+			// update particle's velocity
+			for (int i = 0; i < n_particles; i++){
+
+			}
+			double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+			// Check fitness of unknown fuction
+			Double fitness = (double) evaluation_.evaluate(child);
+			evals++;
+			// Select survivors
 
         /**
 		Initialization

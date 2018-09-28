@@ -5,7 +5,7 @@ public class Particle {
     private Velocity v;
     private double fitness;
     private double[] bestPosition;
-    private static int lr; // learning rate? C1 and C2
+    private double bestFitness;
     private int n_dimensions;
 
     /**
@@ -27,6 +27,14 @@ public class Particle {
 
     public double[] getBestPosition(){
         return this.bestPosition;
+    }
+
+    public double getBestFitness(){
+        return this.bestFitness
+    }
+
+    public void setBestFitness(double bestFitness){
+        this.bestFitness = bestFitness;
     }
 
     public void setPosition(Position p){
@@ -69,5 +77,7 @@ public class Particle {
     public void initialize_velocity(){
 
     }
+
+
 
 }
