@@ -1,7 +1,7 @@
 public class Position {
 
     private double[] coordinates;
-    private double[] bestPosition;
+    private double fitness;
 
     public Position(double[] coordinates){
         this.coordinates = coordinates;

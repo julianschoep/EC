@@ -6,15 +6,17 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	Particle[] particles;
 	private int n_particles = 2;
     private int n_dimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
+	private int evaluations_limit_;
+
 	Random rnd_;
 	ContestEvaluation evaluation_;
-    private int evaluations_limit_;
-	
+	Particle[] particles;
+
+
 	public player25()
 	{
 		rnd_ = new Random();
@@ -33,7 +35,8 @@ public class player25 implements ContestSubmission
 		
 		// Get evaluation properties
 		Properties props = evaluation.getProperties();
-        // Get evaluation limit
+
+		// Get evaluation limit
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
 		// Property keys depend on specific evaluation
 		// E.g. double param = Double.parseDouble(props.getProperty("property_name"));
@@ -70,7 +73,7 @@ public class player25 implements ContestSubmission
 
             // evaluate position with fitness functino
             double fitness = (double) evaluation_.evaluate(particleCoordinates);
-
+			// evaluation_.evaluate(Position.get_position())
             // set evaluation to current fitness and assign best if this fitness is better than previous best
             particles[i].setFitness(fitness);
             if (fitness > particles[i].getBestFitness()){

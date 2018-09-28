@@ -4,7 +4,7 @@ public class Particle {
     private Position p;
     private Velocity v;
     private double fitness;
-    private double[] bestPosition;
+    private Position bestPosition;
     private double bestFitness;
     private int n_dimensions;
 
