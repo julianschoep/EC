@@ -47,16 +47,17 @@ public class Particle {
 
     public void updatePosition(double gbest){
         // do this4
-        this.v = this.v + (lr * )
+        // this.v = this.v + (lr * );
     }
 
-    public void initialize_positions(n_dimensions){
-        private double[] coordinates;
+    public void initialize_positions(int n_dimensions){
         this.n_dimensions = n_dimensions;
+        double[] coordinates = new double[this.n_dimensions];
         Random rnd = new Random();
 
-        for (int i = 0; n_dimensions; i++){
-            randomCoord = rnd.nextDouble((5 - (-5)) + 1) - 5;
+        for (int i = 0; i < this.n_dimensions; i++){
+            //double randomCoord = rnd.nextDouble((5.0d - (-5.0d)) + 1.0d) - 5.0d;
+            double randomCoord = (-5.0d) + (5.0d - (-5.0d)) * rnd.nextDouble();
             coordinates[i] = randomCoord;
         }
 

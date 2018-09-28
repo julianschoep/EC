@@ -6,7 +6,8 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-    private int n_particles = 2;
+	Particle[] particles;
+	private int n_particles = 2;
     private int n_dimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
@@ -56,12 +57,12 @@ public class player25 implements ContestSubmission
         // init population
         Particle[] particles = new Particle[n_particles];
 
-        for (int i = 0; n_particles; i++){
+        for (int i = 0; i < n_particles; i++){
             particles[i].initialize_positions(n_dimensions);
         }
 
         // Calculate and save fitness per particle
-        for (int i = 0; n_particles; i++){
+        for (int i = 0; i < n_particles; i++){
             Position particlePosition = particles[i].getPosition();
             double[] particleCoordinates = particlePosition.getCoordinates();
             double fitness = (double) evaluation_.evaluate(particleCoordinates);

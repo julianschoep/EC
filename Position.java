@@ -11,9 +11,9 @@ public class Position {
         return this.coordinates;
     }
 
-    public void setCoordinates(double[] position){
-        this.velocity = velocity;
-    }
+    //public void setCoordinates(double[] position){
+    //    this.velocity = velocity;
+    //}
 
     public double getCoordAt(int i){
         return this.coordinates[i];
@@ -27,7 +27,7 @@ public class Position {
         double result[];
         result = this.coordinates;
         for(int i= 0; i <= this.coordinates.length-i; i++){
-            result[i] = this.coordinates[i] + subtractor[i]
+            result[i] = this.coordinates[i] + subtractor[i];
         }
         return result;
     }
