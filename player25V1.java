@@ -6,6 +6,10 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
+    private int n_particles = 2;
+    private int n_dimensions = 10;
+    private double[] bestGlobalPosition;
+    private double bestGlobalFitness;
 	Random rnd_;
 	ContestEvaluation evaluation_;
     private int evaluations_limit_;
@@ -50,8 +54,74 @@ public class player25 implements ContestSubmission
         
         int evals = 0;
         // init population
+        Particle[] particles = new Particle[n_particles];
+
+        for (int i = 0; n_particles; i++){
+            particles[i].initialize_positions(n_dimensions);
+        }
+
+        // Calculate and save fitness per particle
+        for (int i = 0; n_particles; i++){
+            Position particlePosition = particles[i].getPosition();
+            double[] particleCoordinates = particlePosition.getCoordinates();
+            double fitness = (double) evaluation_.evaluate(particleCoordinates);
+            particles[i].setFitness(fitness);
+
+            if (fitness > bestGlobalFitness){
+                bestGlobalFitness = fitness;
+                bestGlobalPosition = particleCoordinates;
+            }
+
+        }
+
+
+        /**
+		Initialization
+		1. initialize particle xi(0) from swarm (best drawn from uniform distribution with constraints/limits [-5, 5])
+		2. particles best position = particles current (= starting) position
+		3. Calculate fitness of each particle and if fj(x) > fi(x), initialize fj(x) as best global position as g = xj(0)
+
+		Until stopping criterion is met, do following:
+		1. Update the particle's' velocity according to: v(t+1) = intertia(0.7)*v(t) + c1(p - x(t)) * R1 + c2(g - x(t)) * R2 (usually, c1=c2=2)
+			On the other hand, R1 and R2 are two dxd diagonal matrices of
+			random numbers generated from a uniform distribution in [0,1],
+			so that both the social and the cognitive components have a stochastic
+			influence on the velocity update rule
+
+			Note that matrices R1t and R2t are generated at each iteration for each particle independently
+
+		2. Update the particle's' position according to: x(t+1) = x(t) + v(t+1)
+		3. Evaluate fitness of particle f(xi(t+1))
+		4. if f(xi(t+1)) > f(xi(t)): update personal best position
+		5. if f(xi(t+1)) > g: update global best position
+
+		At the end, best position is represented by g!
+
+
+
+
+
+		each particle is 10-dimensional array with real-values, randomly initialized
+		fitness calculation: put values of particle (10 values of array) into function and get number
+
+		update particle position based on formula: x(t+1) = x(t) + v(t+1)
+
+        */
+		/**
+		 * the first one, defined the inertia or momentum prevents the particle
+		 * from drastically changing direction, by keeping track of the previous
+		 * flow direction; the second term, called the cognitive com- ponent, accounts
+		 * for the tendency of particles to return to their own pre- viously found best positions;
+		 * the last one, named the social component, identifies the propensity of a particle to
+		 * move towards the best position of the whole swarm (or of a local neighborhood of the
+		 * particle, depend- ing on whether a global or partial PSO is implemented). Based on these
+		 * considerations, the velocity of the ith particle is defined as:
+		 *
+		 * v(t+1) = v(t) + c1(p - x(t)) * R1 + c2(g - x(t)) * R2
+ 		 */
         // calculate fitness
-        // make population of N particles
+
+		// make population of N particles
         // randomly initialize N particles with 10-D position with values between -5 and 5
         // give initial random direction and velocity
         // evaluate each particle

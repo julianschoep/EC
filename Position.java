@@ -1,17 +1,17 @@
 public class Position {
 
     private double[] coordinates;
+    private double[] bestPosition;
 
     public Position(double[] coordinates){
         this.coordinates = coordinates;
-
     }
 
-    public double[] getPosition(){
+    public double[] getCoordinates(){
         return this.coordinates;
     }
 
-    public void setPosition(double[] position){
+    public void setCoordinates(double[] position){
         this.velocity = velocity;
     }
 

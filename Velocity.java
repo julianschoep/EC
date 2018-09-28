@@ -1,5 +1,7 @@
 public class Velocity{
 
+    private double c1 = 2.0;
+    private double c2 = 2.0;
 
     private double[] velocity;
 
