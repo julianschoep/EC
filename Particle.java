@@ -4,9 +4,9 @@ public class Particle {
     private Position p;
     private Velocity v;
     private double fitness;
-    private Position bestPosition;
-    private double bestFitness;
-    private int n_dimensions;
+    private Position pBest;
+    private double pBestFitness;
+    private int nDimensions; // java way of var naming is first letter small, next word capital, no '_'
 
     /**
     public Particle(Position p, Velocity v, double fitness){
@@ -16,6 +16,27 @@ public class Particle {
         this.fitness = fitness;
     }
     */
+    public Particle(int nDimensions){
+
+        this.nDimensions = nDimensions;
+        double[] coordinates = new double[this.nDimensions];
+        Random rnd = new Random();
+
+        for (int i = 0; i < this.n_dimensions; i++){
+            //double randomCoord = rnd.nextDouble((5.0d - (-5.0d)) + 1.0d) - 5.0d;
+            double randomCoord = (-5.0d) + (5.0d - (-5.0d)) * rnd.nextDouble();
+            coordinates[i] = randomCoord;
+        }
+
+        // initialze position and pbest
+        this.p = this.pBest = new Position(coorindates);
+    }
+
+    public
+
+
+
+
 
     public Velocity getVelocity(){
         return this.v;
@@ -53,26 +74,13 @@ public class Particle {
         this.fitness = fitness;
     }
 
-    public void updatePosition(double gbest){
+    public void update(Position gbest){
+
         // do this4
         // this.v = this.v + (lr * );
     }
 
-    public void initialize_positions(int n_dimensions){
-        this.n_dimensions = n_dimensions;
-        double[] coordinates = new double[this.n_dimensions];
-        Random rnd = new Random();
 
-        for (int i = 0; i < this.n_dimensions; i++){
-            //double randomCoord = rnd.nextDouble((5.0d - (-5.0d)) + 1.0d) - 5.0d;
-            double randomCoord = (-5.0d) + (5.0d - (-5.0d)) * rnd.nextDouble();
-            coordinates[i] = randomCoord;
-        }
-
-        p = new Position(coordinates);
-        this.setPosition(p);
-        this.setBestPosition(coordinates);
-    }
 
     public void initialize_velocity(){
 
