@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class Swarm {
     private Particle[] swarm;
-    private Position gbestPosition;
+    private double[] gbestPosition;
     private double gbestFitness;
     private int pSize;
     private ContestEvaluation evaluation;
@@ -12,35 +12,30 @@ public class Swarm {
 
     public Swarm(int pSize, int nDimensions, ContestEvaluation evaluation, Random rnd){
         // Initialize the swarm
-        this.swarm = Particle[pSize];
+        this.swarm = new Particle[pSize];
         this.pSize = pSize;
-        this.gbestFitness = -1;
+        this.gbestFitness = -Double.MAX_VALUE;
         this.evaluation = evaluation;
         this.rnd = rnd;
 
         for(int i = 0; i < pSize; i++){
             this.swarm[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles
         }
-
-        // set initial global best position and fitness
-        for(int i = 0; i < pSize; i++){
-            double particleFitness = this.swarm[i].getFitness();
-
-            if(particleFitness > this.gbestFitness){
-                this.gbestFitness = particleFitness;
-                this.gbestPosition = this.swarm[i].getPosition();
-            }
-        }
+        this.updateGlobalFitness();
     }
 
-    public Position iterate() { // not very pretty...
+    public void iterate() { // not very pretty...
         // update particle positions
-        for (int i = 0; i < pSize; i++) {
+        for (int i = 0; i < this.pSize; i++) {
             this.swarm[i].updatePosition(this.gbestPosition);
         }
 
         // select new global best
-        for (int i = 0; i < pSize; i++) {
+        this.updateGlobalFitness();
+    }
+
+    public void updateGlobalFitness(){
+        for (int i = 0; i < this.pSize; i++) {
             double particleFitness = this.swarm[i].getFitness();
 
             if (particleFitness > this.gbestFitness) {
@@ -50,14 +45,15 @@ public class Swarm {
         }
     }
 
-    public Position getGbestPosition() {
+
+
+    public double[] getGbestPosition() {
         return this.gbestPosition;
     }
 
     public double getGbestFitness() {
         return this.gbestFitness;
     }
-
 
 
     /**

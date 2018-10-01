@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	private int nParticles = 2;
+	private int nParticles = 1;
     private int nDimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
@@ -57,21 +57,28 @@ public class player25 implements ContestSubmission
 	public void run()
 	{
 		// Run your algorithm here
-        
         int evals = 0;
 
         // init population
         Swarm swarm = new Swarm(nParticles, nDimensions,  evaluation_, rnd_);
 
         // Calculate and save fitness per particle
-        while(evals < evaluations_limit_){
+        while(evals < evaluations_limit_) {
+        	//System.out.println(evals);
+			//System.out.println(evaluations_limit_);
 			// update particle's velocity
 			swarm.iterate();
 			bestGlobalFitness = swarm.getGbestFitness();
-			bestGlobalPosition = swarm.getGbestPosition().getCoordinates();
-			Double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
+			bestGlobalPosition = swarm.getGbestPosition();
+
+			double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+			// Check fitness of unknown fuction
+			//double fitness = (double) evaluation_.evaluate(child);
+
+			double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
+			System.out.println(fitness);
 			evals++;
-			
+		}
 
         /**
 		Initialization
@@ -117,17 +124,8 @@ public class player25 implements ContestSubmission
 		 *
 		 * v(t+1) = v(t) + c1(p - x(t)) * R1 + c2(g - x(t)) * R2
  		 */
-        // calculate fitness
 
-		// make population of N particles
-        // randomly initialize N particles with 10-D position with values between -5 and 5
-        // give initial random direction and velocity
-        // evaluate each particle
-        // store personal best
-        // store global best
-        // store neighbourhood best
-
-
+		/**
         while(evals<evaluations_limit_){
         	//
             double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
@@ -136,6 +134,6 @@ public class player25 implements ContestSubmission
             evals++;
             // Select survivors
         }
-
+		 */
 	}
 }

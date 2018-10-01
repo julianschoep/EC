@@ -33,14 +33,15 @@ public class Position {
         this.coordinates[i] = coord;
     }
 
-    public Position updateCoordinates(Position gBestPosition, Position particleBestPosition){
+    public void updateCoordinates(Position gBestPosition, Position particleBestPosition){
         // update velocities
         this.velocity.updateVelocity(gBestPosition, particleBestPosition, this.coordinates);
+        double[] velocities = this.velocity.getVelocity();
         double[] newCoordinates = new double[nDimensions];
 
         // update positions
         for(int i = 0; i < this.nDimensions; i++){
-            newCoordinates[i] = this.coordinates[i] + this.velocity[i];
+            newCoordinates[i] = this.coordinates[i] + velocities[i];
         }
         this.coordinates = newCoordinates;
     }

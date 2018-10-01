@@ -13,7 +13,7 @@ public class Velocity{
     public Velocity(int nDimensions, Random rnd){
         this.nDimensions = nDimensions;
         this.rnd = rnd;
-        this.velocity = double[this.nDimensions];
+        this.velocity = new double[this.nDimensions];
 
         // initialize velocity double[] with small random values
         for(int i = 0; i < this.nDimensions; i++){
@@ -36,8 +36,8 @@ public class Velocity{
         double[] newVelocity = new double[this.nDimensions];
 
         for (int i = 0; i < this.nDimensions; i++){
-            private double r1 = rnd.nextDouble();
-            private double r2 = rnd.nextDouble();
+            double r1 = this.rnd.nextDouble();
+            double r2 = this.rnd.nextDouble();
             newVelocity[i] = (inertia * this.velocity[i]) + (c1 * (pBestPosition[i] - currentPosition[i]) * r1) + (c2 * (gBestPosition[i] - currentPosition[i]) * r2);
         }
         this.velocity = newVelocity;
