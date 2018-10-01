@@ -1,57 +1,51 @@
+import org.vu.contest.ContestEvaluation;
 import java.util.Random;
 
 public class Particle {
-    private Position p;
-    private Velocity v;
     private double fitness;
-    private Position pBest;
-    private double pBestFitness;
+    private double bestFitness;
     private int nDimensions; // java way of var naming is first letter small, next word capital, no '_'
+    private Position p;
+    private Position bestPosition;
+    private ContestEvaluation evaluation;
+    private Random rnd;
 
-    /**
-    public Particle(Position p, Velocity v, double fitness){
-
-        this.p = p;
-        this.v = v;
-        this.fitness = fitness;
-    }
-    */
-    public Particle(int nDimensions){
-
+    public Particle(int nDimensions, ContestEvaluation evaluation, Random rnd){
+        // initialize the particle
         this.nDimensions = nDimensions;
-        double[] coordinates = new double[this.nDimensions];
-        Random rnd = new Random();
+        this.evaluation = evaluation;
+        this.rnd = rnd;
 
-        for (int i = 0; i < this.n_dimensions; i++){
-            //double randomCoord = rnd.nextDouble((5.0d - (-5.0d)) + 1.0d) - 5.0d;
-            double randomCoord = (-5.0d) + (5.0d - (-5.0d)) * rnd.nextDouble();
-            coordinates[i] = randomCoord;
+        // initialze position and pbest / bestFitness
+        this.p = this.bestPosition = new Position(this.nDimensions, this.rnd);
+        this.fitness = this.bestFitness = (double) evaluation.evaluate(p.getCoordinates());
+    }
+
+
+    public void updatePosition(Position gBestPosition){
+        this.p.updateCoordinates(gBestPosition, this.bestPosition);
+        this.fitness = (double) evaluation.evaluate(p.getCoordinates());
+
+        // check if position update is better than best position
+        if(this.fitness > this.bestFitness){
+            this.bestPosition = this.p;
         }
-
-        // initialze position and pbest
-        this.p = this.pBest = new Position(coorindates);
     }
 
-    public
 
-
-
-
-
-    public Velocity getVelocity(){
-        return this.v;
-    }
 
     public Position getPosition(){
         return this.p;
     }
 
-    public double[] getBestPosition(){
+    public Position getBestPosition(){
         return this.bestPosition;
     }
 
+    public double getFitness(){ return this.fitness};
+
     public double getBestFitness(){
-        return this.bestFitness
+        return this.bestFitness;
     }
 
     public void setBestFitness(double bestFitness){
@@ -66,26 +60,8 @@ public class Particle {
         this.bestPosition = bestPosition;
     }
 
-    public void setVelocity(Velocity v){
-        this.v = v;
-    }
-
     public void setFitness(double fitness){
         this.fitness = fitness;
     }
-
-    public void update(Position gbest){
-
-        // do this4
-        // this.v = this.v + (lr * );
-    }
-
-
-
-    public void initialize_velocity(){
-
-    }
-
-
 
 }

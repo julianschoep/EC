@@ -2,17 +2,45 @@ import java.util.Random;
 
 public class Velocity{
 
-    private int n_dimensions = 10;
+    private int nDimensions;
     private double c1 = 2.0;
     private double c2 = 2.0;
     private double inertia = 0.7;
     private double[] velocity;
-    Random rnd = new Random();
+    private Random rnd;
 
 
+    public Velocity(int nDimensions, Random rnd){
+        this.nDimensions = nDimensions;
+        this.rnd = rnd;
+        this.velocity = double[this.nDimensions];
 
-    public Velocity(double[] velocity){
-        this.velocity = velocity;
+        // initialize velocity double[] with small random values
+        for(int i = 0; i < this.nDimensions; i++){
+            double smallRandomValue = (rnd.nextDouble() + 0.1d) / 10;
+            this.velocity[i] = smallRandomValue;
+        }
+    }
+
+
+    public void updateVelocity(Position globalBestPosition, Position particleBestPosition, double[] currentPosition){
+        // Formula: inertia * v(t) + c1 * (p - x(t)) * R1 + c2 * (g - x(t)) * R2
+        // constants: inertia = 0.7, c1 = c2 = 2
+        // R1 = dxd diagonal matrix with random numbers from normal distribution [0,1]
+        // R2 = dxd diagonal matrix with random numbers from normal distribution [0,1]
+        //  p = personal best position
+        //  g = global best position
+
+        double[] gBestPosition = globalBestPosition.getCoordinates();
+        double[] pBestPosition = particleBestPosition.getCoordinates();
+        double[] newVelocity = new double[this.nDimensions];
+
+        for (int i = 0; i < this.nDimensions; i++){
+            private double r1 = rnd.nextDouble();
+            private double r2 = rnd.nextDouble();
+            newVelocity[i] = (inertia * this.velocity[i]) + (c1 * (pBestPosition[i] - currentPosition[i]) * r1) + (c2 * (gBestPosition[i] - currentPosition[i]) * r2);
+        }
+        this.velocity = newVelocity;
     }
 
     public double[] getVelocity(){
@@ -31,40 +59,5 @@ public class Velocity{
         return this.velocity[i];
     }
 
-    public double update_velocity(double velocity_at_position, double personalBestPosition, double globalBestPosition, double currentPosition){
-        private double newVelocity = 0.0d;
-        private double r1 = rnd.nextDouble();
-        private double r2 = rnd.nextDouble();
-
-        for (int i = 0; i < n_dimensions; i++){
-            private double oldVelocity = getVelocityAt(i);
-            private double newVelocity =
-            //newVelocity = inertia * velocity_at_position + (c1 * (personalBestPosition - currentPosition)) * r1 + (c2 * (globalBestPosition - currentPosition) * r2);
-        }
-        newVelocity = inertia * velocity_at_position + (c1 * (personalBestPosition - currentPosition)) * r1 + (c2 * (globalBestPosition - currentPosition) * r2);
-        // R1 = dxd diagonal matrix with random numbers from normal distribution [0,1]
-        // R2 = dxd diagonal matrix with random numbers from normal distribution [0,1]
-        //  p = personal best position
-        //  g = global best position
-        return newVelocity;
-    }
-
-
-    /**
-    public double[][] drawMatrix(int n_dimensions) {
-        Random rnd = new Random();
-        double[][] randomMatrix = new double[n_dimensions][n_dimensions];
-
-        for(int i = 0; i < n_dimensions; i++) {
-            for(int j = 0; j < n_dimensions; j++) {
-                if (i == j) {
-                    double randomVal = rnd.nextDouble();
-                    randomMatrix[i][j] = randomVal;
-                }
-            }
-        }
-        return randomMatrix;
-    }
-    */
 
 }

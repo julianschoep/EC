@@ -6,17 +6,17 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	private int n_particles = 2;
-    private int n_dimensions = 10;
+	private int nParticles = 2;
+    private int nDimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
 	private int evaluations_limit_;
 
-	Random rnd_; // NOTE so I think we have to pass this to the swarm init and particle init
-	// as we are supposed to be able to set seeds for a number of evaluations.
+	Random rnd_; // NOTE so I think we have to pass this to the swarm init and particle init;
+				 // as we are supposed to be able to set seeds for a number of evaluations.
+				 // - I think you're right so I gave the rnd_ as an input to the other classes (swarm, particle, velocity)
 
 	ContestEvaluation evaluation_;
-	Particle[] particles;
 
 
 	public player25()
@@ -26,7 +26,7 @@ public class player25 implements ContestSubmission
 
 	public void setSeed(long seed)
 	{
-		// Set seed of algortihms random process
+		// Set seed of algortihms' random process
 		rnd_.setSeed(seed);
 	}
 
@@ -59,17 +59,19 @@ public class player25 implements ContestSubmission
 		// Run your algorithm here
         
         int evals = 0;
+
         // init population
-		int pSize = 100; // just arbitray chosen
-        Swarm swarm = Swarm(pSize, 10,  evaluation_)
+        Swarm swarm = new Swarm(nParticles, nDimensions,  evaluation_, rnd_);
 
         // Calculate and save fitness per particle
-        while(evals<evaluations_limit_){
+        while(evals < evaluations_limit_){
 			// update particle's velocity
-			bestParticlePosition = swarm.iterate()
-			Double fitness = (double) evaluation_.evaluate(bestParticlePosition.getPosition().getCoordinates());
+			swarm.iterate();
+			bestGlobalFitness = swarm.getGbestFitness();
+			bestGlobalPosition = swarm.getGbestPosition().getCoordinates();
+			Double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
 			evals++;
-			// Select survivors
+			
 
         /**
 		Initialization
