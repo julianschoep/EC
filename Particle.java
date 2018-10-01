@@ -33,7 +33,8 @@ public class Particle {
         // initialize velocity double[] with small random values
         for(int i = 0; i < this.nDimensions; i++){
             double smallRandomValue = (rnd.nextDouble() + 0.1d) / 10;
-            this.velocity[i] = smallRandomValue;
+            //this.velocity[i] = smallRandomValue;
+            this.velocity[i] = 0;
         }
 
         // initialze position and pbest / bestFitness
@@ -41,57 +42,48 @@ public class Particle {
     }
 
 
-    public void updateVelocity(double[] globalBestPosition){
-        // Formula: inertia * v(t) + c1 * (p - x(t)) * R1 + c2 * (g - x(t)) * R2
-        // constants: inertia = 0.7, c1 = c2 = 2
-        // R1 = dxd diagonal matrix with random numbers from normal distribution [0,1]
-        // R2 = dxd diagonal matrix with random numbers from normal distribution [0,1]
-        //  p = personal best position
-        //  g = global best position
+    public void updatePosition(double[] gBestPosition){
+        double[] oldPosition = this.position;
+        double[] oldVelocity = this.velocity;
+        double[] newPosition = new double[nDimensions];
         double[] newVelocity = new double[this.nDimensions];
 
-        //System.out.println(globalBestPosition[0]);
-        //System.out.println(this.position[0]);
-        //System.out.println(this.bestPosition[0]);
-
+        System.out.println("VELOCITY before - after");
+        printArray(oldVelocity);
         for (int i = 0; i < this.nDimensions; i++){
-            double r1 = this.rnd.nextDouble();
-            double r2 = this.rnd.nextDouble();
-            newVelocity[i] = (inertia * this.velocity[i]) + (c1 * (this.bestPosition[i] - this.position[i]) * r1) + (c2 * (globalBestPosition[i] - this.position[i]) * r2);
+            double r1 = this.rnd.nextDouble()/2;
+            double r2 = this.rnd.nextDouble()/2;
+            newVelocity[i] = (inertia * oldVelocity[i]) + (c1 * (this.bestPosition[i] - oldPosition[i]) * r1) + (c2 * (gBestPosition[i] - oldPosition[i]) * r2);
         }
+        printArray(newVelocity);
+
+        System.out.println("POSITION before - after");
+        this.printArray(oldPosition);
+        for(int i = 0; i < this.nDimensions; i++){
+            newPosition[i] = oldPosition[i] + newVelocity[i];
+        }
+        this.printArray(newPosition);
+
+        double fitness =  (double) this.evaluation.evaluate(newPosition);
+        System.out.println(fitness);
+
+        // check if position update is better than best position
+        if(fitness > this.bestFitness){
+            this.bestFitness = fitness;
+            this.bestPosition = newPosition;
+        }
+        this.position = newPosition;
         this.velocity = newVelocity;
     }
 
 
-    public void updateCoordinates(double[] gBestPosition){
-        // update velocities
-        this.updateVelocity(gBestPosition);
-        double[] newCoordinates = new double[nDimensions];
-
-        // update positions
-        //System.out.println("Updating coordinates");
+    public void printArray(double[] arrayBefore){
         for(int i = 0; i < this.nDimensions; i++){
-            newCoordinates[i] = this.position[i] + this.velocity[i];
-            //System.out.print(newCoordinates[i]);
-            //System.out.print(',');
+            System.out.print(arrayBefore[i]);
+            System.out.print(' ');
         }
-        //System.out.println(" ");
-        this.position = newCoordinates;
+        System.out.println(" ");
     }
-
-
-    public void updatePosition(double[] gBestPosition){
-        this.updateCoordinates(gBestPosition);
-        //System.out.println(this.evaluation);
-        //System.out.println(this.position[0]);
-        this.fitness =  (double) this.evaluation.evaluate(this.position);
-
-        // check if position update is better than best position
-        if(this.fitness > this.bestFitness){
-            this.bestPosition = this.position;
-        }
-    }
-
 
 
     public double[] getPosition(){
@@ -125,3 +117,61 @@ public class Particle {
     }
 
 }
+
+/*
+
+
+    public double[] updateVelocity(double[] globalBestPosition, double[] position){
+        // Formula: inertia * v(t) + c1 * (p - x(t)) * R1 + c2 * (g - x(t)) * R2
+        // constants: inertia = 0.7, c1 = c2 = 2
+        // R1 = dxd diagonal matrix with random numbers from normal distribution [0,1]
+        // R2 = dxd diagonal matrix with random numbers from normal distribution [0,1]
+        //  p = personal best position
+        //  g = global best position
+        double[] newVelocity = new double[this.nDimensions];
+
+        //System.out.println(globalBestPosition[0]);
+        //System.out.println(this.position[0]);
+        //System.out.println(this.bestPosition[0]);
+
+        for (int i = 0; i < this.nDimensions; i++){
+            double r1 = this.rnd.nextDouble();
+            double r2 = this.rnd.nextDouble();
+            newVelocity[i] = (inertia * this.velocity[i]) + (c1 * (this.bestPosition[i] - position[i]) * r1) + (c2 * (globalBestPosition[i] - position[i]) * r2);
+        }
+        return newVelocity;
+    }
+
+
+    public double[] updateCoordinates(double[] gBestPosition, double[] oldPosition){
+        // update velocities
+        velocity = this.updateVelocity(gBestPosition, position);
+        double[] newCoordinates = new double[nDimensions];
+
+        // update positions
+        //System.out.println("Updating coordinates");
+        for(int i = 0; i < this.nDimensions; i++){
+            newCoordinates[i] = oldPosition[i] + velocity[i];
+            //System.out.print(newCoordinates[i]);
+            //System.out.print(',');
+        }
+        //System.out.println(" ");
+        return newCoordinates;
+    }
+
+
+    public void updatePosition(double[] gBestPosition){
+        double[] oldPosition = this.position;
+        double[] position = this.updateCoordinates(gBestPosition, oldPosition);
+        //System.out.println(this.evaluation);
+        //System.out.println(this.position[0]);
+        this.fitness =  (double) this.evaluation.evaluate(position);
+
+        // check if position update is better than best position
+        if(this.fitness > this.bestFitness){
+            this.bestPosition = position;
+        }
+        this.position = position;
+    }
+
+ */

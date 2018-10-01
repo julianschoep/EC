@@ -34,6 +34,7 @@ public class Swarm {
         this.updateGlobalFitness();
     }
 
+
     public void updateGlobalFitness(){
         for (int i = 0; i < this.pSize; i++) {
             double particleFitness = this.swarm[i].getFitness();
@@ -46,7 +47,6 @@ public class Swarm {
     }
 
 
-
     public double[] getGbestPosition() {
         return this.gbestPosition;
     }
@@ -54,25 +54,5 @@ public class Swarm {
     public double getGbestFitness() {
         return this.gbestFitness;
     }
-
-
-    /**
-    // update particle positions
-    Position[psize] currentPositions
-    for(int i = 0; i < this.pSize; i++){
-        currentPositions[i] = this.swarm[i].update(this.gbest)
-    }
-
-    // determine new gbest
-    for(int i = 0; i < this.pSize; i++){
-        particlePosition = currentPositions[i].getPosition();
-        fitness = this.evaluation(particlePosition.getCoordinates())
-        if fitness > this.gbestFitness{
-            this.gbestFitness = fitness;
-            this.gbest = currentPositions[i];
-        }
-    }
-    return this.gbest;
-    */
 
 }

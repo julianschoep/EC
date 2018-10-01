@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	private int nParticles = 1;
+	private int nParticles = 100;
     private int nDimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
@@ -68,15 +68,15 @@ public class player25 implements ContestSubmission
 			//System.out.println(evaluations_limit_);
 			// update particle's velocity
 			swarm.iterate();
-			bestGlobalFitness = swarm.getGbestFitness();
+			double fitness = swarm.getGbestFitness();
 			bestGlobalPosition = swarm.getGbestPosition();
 
-			double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+			//double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 			// Check fitness of unknown fuction
 			//double fitness = (double) evaluation_.evaluate(child);
 
-			double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
-			System.out.println(fitness);
+			//double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
+			//System.out.println(fitness);
 			evals++;
 		}
 
