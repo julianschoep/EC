@@ -48,24 +48,24 @@ public class Particle {
         double[] newPosition = new double[nDimensions];
         double[] newVelocity = new double[this.nDimensions];
 
-        System.out.println("VELOCITY before - after");
-        printArray(oldVelocity);
+        //System.out.println("VELOCITY before - after");
+        //printArray(oldVelocity);
         for (int i = 0; i < this.nDimensions; i++){
             double r1 = this.rnd.nextDouble()/2;
             double r2 = this.rnd.nextDouble()/2;
             newVelocity[i] = (inertia * oldVelocity[i]) + (c1 * (this.bestPosition[i] - oldPosition[i]) * r1) + (c2 * (gBestPosition[i] - oldPosition[i]) * r2);
         }
-        printArray(newVelocity);
+        //printArray(newVelocity);
 
-        System.out.println("POSITION before - after");
-        this.printArray(oldPosition);
+        //System.out.println("POSITION before - after");
+        //this.printArray(oldPosition);
         for(int i = 0; i < this.nDimensions; i++){
             newPosition[i] = oldPosition[i] + newVelocity[i];
         }
-        this.printArray(newPosition);
+        //this.printArray(newPosition);
 
         double fitness =  (double) this.evaluation.evaluate(newPosition);
-        System.out.println(fitness);
+        //System.out.println(fitness);
 
         // check if position update is better than best position
         if(fitness > this.bestFitness){

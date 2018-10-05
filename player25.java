@@ -63,7 +63,8 @@ public class player25 implements ContestSubmission
         Swarm swarm = new Swarm(nParticles, nDimensions,  evaluation_, rnd_);
 
         // Calculate and save fitness per particle
-        while(evals < evaluations_limit_) {
+        //while(evals < evaluations_limit_) {
+        while(evals < 50000) {
         	//System.out.println(evals);
 			//System.out.println(evaluations_limit_);
 			// update particle's velocity
