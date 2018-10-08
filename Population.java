@@ -1,8 +1,10 @@
+import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
+import java.util.Math;
 
-public class Swarm {
-    private Particle[] swarm;
+public class Population {
+    private Particle[] population;
     private double[] gbestPosition;
     private double gbestFitness;
     private int pSize;
@@ -10,13 +12,14 @@ public class Swarm {
     private Random rnd;
 
 
-    public Swarm(int pSize, int nDimensions, ContestEvaluation evaluation, Random rnd){
-        // Initialize the swarm
+    public Population(int pSize, int nDimensions, ContestEvaluation evaluation, Random rnd){
+        // Initialize the population
         this.swarm = new Particle[pSize];
         this.pSize = pSize;
         this.gbestFitness = -Double.MAX_VALUE;
         this.evaluation = evaluation;
         this.rnd = rnd;
+        this.d = nDimensions;
 
         for(int i = 0; i < pSize; i++){
             this.swarm[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles
@@ -24,7 +27,19 @@ public class Swarm {
         this.updateGlobalFitness();
     }
 
+    public void doNiching(){
+        // do clustering
+        // for k in {2 -- this.pSize/2}
+        //
+        //      do 10 cluster iterations, select best on basis of error (implement error for cluster)
+        // select best cluster based on BIC (implement BIC calculation)
+        // do cutting procedure
+        // assign  cutted particles to vonneumann topology as a seperate swarm
+        //
+    }
+
     public void iterate() { // not very pretty...
+
         // update particle positions
         for (int i = 0; i < this.pSize; i++) {
             this.swarm[i].updatePosition(this.gbestPosition);
@@ -33,6 +48,8 @@ public class Swarm {
         // select new global best
         this.updateGlobalFitness();
     }
+
+
 
 
     public void updateGlobalFitness(){
@@ -46,7 +63,6 @@ public class Swarm {
         }
     }
 
-
     public double[] getGbestPosition() {
         return this.gbestPosition;
     }
@@ -54,5 +70,27 @@ public class Swarm {
     public double getGbestFitness() {
         return this.gbestFitness;
     }
+
+
+
+
+    public double calculateEuclideanDistance(Particle x, Particle y){
+        double totalDistance = 0;
+        xpos = x.getPosition();
+        ypos = y.getPosition();
+        for(int i = 0; i < this.d; i++){
+            double xi 			=  xpos(i);
+            double yi 			=  ypos(i);
+            double distance	 	=  Math.pow(xi - yi, 2);
+            totalDistance 		+= distance;
+        }
+        double result = Math.sqrt(totalDistance);
+        return result;
+    }
+
+
+
+
+
 
 }

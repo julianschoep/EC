@@ -9,8 +9,8 @@ public class Particle {
     private double[] position;
     private double[] velocity;
     private double[] bestPosition;
-    private double c1 = 2.0;
-    private double c2 = 2.0;
+    private double c1 = 2;
+    private double c2 = 2;
     private double inertia = 0.7;
     private ContestEvaluation evaluation;
     private Random rnd;
@@ -90,6 +90,8 @@ public class Particle {
     public double[] getPosition(){
         return this.position;
     }
+
+    public double getPositionAt(int i){ return this.position[i]}
 
     public double[] getBestPosition(){
         return this.bestPosition;

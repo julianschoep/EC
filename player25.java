@@ -60,17 +60,20 @@ public class player25 implements ContestSubmission
         int evals = 0;
 
         // init population
-        Swarm swarm = new Swarm(nParticles, nDimensions,  evaluation_, rnd_);
+        Population population = new Population(nParticles, nDimensions,  evaluation_, rnd_);
 
         // Calculate and save fitness per particle
         //while(evals < evaluations_limit_) {
-        while(evals < 50000) {
+        while(evals < evaluations_limit_) {
+			if(evals % C == 0){ // every C steps do niching operation
+				population.doNiching()
+			}
         	//System.out.println(evals);
 			//System.out.println(evaluations_limit_);
 			// update particle's velocity
-			swarm.iterate();
-			double fitness = swarm.getGbestFitness();
-			bestGlobalPosition = swarm.getGbestPosition();
+			population.iterate();
+			double fitness = population.getGbestFitness();
+			bestGlobalPosition = population.getGbestPosition();
 
 			//double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 			// Check fitness of unknown fuction
