@@ -38,11 +38,11 @@ public class Swarm {
 
     public void updateGlobalFitness(){
         for (int i = 0; i < this.pSize; i++) {
-            double particleFitness = this.swarm[i].getFitness();
+            double particleFitness = this.swarm[i].getBestFitness();
 
             if (particleFitness > this.gbestFitness) {
                 this.gbestFitness = particleFitness;
-                this.gbestPosition = this.swarm[i].getPosition();
+                this.gbestPosition = this.swarm[i].getBestPosition();
             }
         }
     }

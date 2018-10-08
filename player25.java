@@ -72,6 +72,10 @@ public class player25 implements ContestSubmission
 			// update particle's velocity
 			swarm.iterate();
 			double fitness = swarm.getGbestFitness();
+			System.out.print("Iteration ");
+			System.out.print(evals);
+			System.out.print(" ");
+			System.out.println(fitness);
 			bestGlobalPosition = swarm.getGbestPosition();
 			evals++;
 		}
