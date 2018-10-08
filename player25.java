@@ -6,7 +6,8 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	private int nParticles = 100;
+	private int nParticles = Integer.parseInt(System.getProperty("var"));
+
     private int nDimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
@@ -58,26 +59,20 @@ public class player25 implements ContestSubmission
 	{
 		// Run your algorithm here
         int evals = 0;
+		System.out.print("Number of particles: ");
+        System.out.println(this.nParticles);
 
         // init population
         Swarm swarm = new Swarm(nParticles, nDimensions,  evaluation_, rnd_);
 
         // Calculate and save fitness per particle
-        //while(evals < evaluations_limit_) {
-        while(evals < 50000) {
+        while(evals < evaluations_limit_) {
         	//System.out.println(evals);
 			//System.out.println(evaluations_limit_);
 			// update particle's velocity
 			swarm.iterate();
 			double fitness = swarm.getGbestFitness();
 			bestGlobalPosition = swarm.getGbestPosition();
-
-			//double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-			// Check fitness of unknown fuction
-			//double fitness = (double) evaluation_.evaluate(child);
-
-			//double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
-			//System.out.println(fitness);
 			evals++;
 		}
 
