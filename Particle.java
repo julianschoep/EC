@@ -1,3 +1,4 @@
+import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
 
