@@ -91,7 +91,7 @@ public class Particle {
         return this.position;
     }
 
-    public double getPositionAt(int i){ return this.position[i]}
+    public double getPositionAt(int i){ return this.position[i];}
 
     public double[] getBestPosition(){
         return this.bestPosition;

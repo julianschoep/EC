@@ -61,12 +61,13 @@ public class player25 implements ContestSubmission
 
         // init population
         Population population = new Population(nParticles, nDimensions,  evaluation_, rnd_);
-
+        
         // Calculate and save fitness per particle
         //while(evals < evaluations_limit_) {
         while(evals < evaluations_limit_) {
-			if(evals % C == 0){ // every C steps do niching operation
-				population.doNiching()
+			if(evals % 2 == 0){ // every C steps do niching operation
+				System.out.println("IDENTIFYING NICHES");
+				population.identifyNiches();
 			}
         	//System.out.println(evals);
 			//System.out.println(evaluations_limit_);

@@ -1,7 +1,7 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
-import java.util.Math;
+import java.lang.Math;
 
 public class Population {
     private Particle[] population;
@@ -10,11 +10,13 @@ public class Population {
     private int pSize;
     private ContestEvaluation evaluation;
     private Random rnd;
+    private Subswarm[] subswarms;
+    private int d;
 
 
     public Population(int pSize, int nDimensions, ContestEvaluation evaluation, Random rnd){
         // Initialize the population
-        this.swarm = new Particle[pSize];
+        this.population = new Particle[pSize];
         this.pSize = pSize;
         this.gbestFitness = -Double.MAX_VALUE;
         this.evaluation = evaluation;
@@ -22,45 +24,95 @@ public class Population {
         this.d = nDimensions;
 
         for(int i = 0; i < pSize; i++){
-            this.swarm[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles
+            this.population[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles, calls eval!
         }
         this.updateGlobalFitness();
     }
 
-    public void doNiching(){
+    public void identifyNiches(){
         // do clustering
         // for k in {2 -- this.pSize/2}
-        //
         //      do 10 cluster iterations, select best on basis of error (implement error for cluster)
         // select best cluster based on BIC (implement BIC calculation)
+
+        Subswarm[] bestClusters;
+        double bestBIC = Double.MAX_VALUE;
+        for(int k = 2; k < this.pSize/2; k++){
+
+            double bestError = Double.MAX_VALUE;
+            Subswarm[] bestClustersAtK;
+            for(int i = 0; i < 10; i++){
+                Kmeans kmeans = new Kmeans(this.d, k, this.population,this.evaluation, this.rnd);
+                Subswarm[] clusters = kmeans.cluster();
+                double squaredError = kmeans.getSquaredError();
+                if(squaredError < bestError){
+                    bestError = squaredError;
+                    bestClustersAtK = clusters;
+                }
+            }
+            double BIC = calculateBIC(bestClustersAtK);
+            if(BIC < bestBIC){
+                bestBIC = BIC;
+                bestClusters = bestClustersAtK;
+            }
+        }
+
         // do cutting procedure
+        // calculate average number of particles in the clusters
+        double Navg = 0;
+        for(int i = 0; i < bestClusters.length; i++){
+            Navg += bestClusters[i].getParticles().length;
+        }
+        Navg = Navg/bestClusters.length;
+        // identify particles to cut; cut clusters with Nj > Navg
+        for(int i = 0; i < bestClusters.length; i++){
+            int dN = bestClusters[i].getParticles().length - (int) Navg;
+            if(dN > 0){ // there are more particles than Navg in cluster
+                // remove bottom dN particles from cluster based on pbest.
+                Subswarm[] unniched = bestClusters[i].removeBottomNParticles(dN);
+            }
+        }
+
+        System.out.println("DONE");
+
         // assign  cutted particles to vonneumann topology as a seperate swarm
         //
     }
 
-    public void iterate() { // not very pretty...
+    private double calculateBIC(Subswarm[] clusters){
+        int k = clusters.length;
+        int p = (k-1)+(this.d*k)+k;
+        int N = this.pSize;
 
-        // update particle positions
-        for (int i = 0; i < this.pSize; i++) {
-            this.swarm[i].updatePosition(this.gbestPosition);
+        double likelihoodSum = 0;
+        for(int i = 0; i < k; i ++){
+            Subswarm cluster = clusters[i];
+            int Nj = clusters[i].getParticles().length;
+            double sigmaSquared = clusters[i].getSquaredError();
+            likelihoodSum += ((Nj/2)*Math.log(2*Math.PI))-(((Nj*this.d)/2)*Math.log(sigmaSquared))
+                    - ((Nj-1)/2) + (Nj*Math.log(Nj));
         }
 
+        double likelihoodClusters = likelihoodSum - (N * Math.log(N));
+        double BIC = likelihoodClusters - (p/2)*Math.log(N);
+        return BIC;
+    }
+
+    public void iterate() { // not very pretty...
+        // update particle positions
+        //for (int i = 0; i < this.pSize; i++) {
+        //this.swarm[i].updatePosition(this.gbestPosition);
+        //}
+
         // select new global best
-        this.updateGlobalFitness();
+        //this.updateGlobalFitness();
     }
 
 
 
 
     public void updateGlobalFitness(){
-        for (int i = 0; i < this.pSize; i++) {
-            double particleFitness = this.swarm[i].getBestFitness();
-
-            if (particleFitness > this.gbestFitness) {
-                this.gbestFitness = particleFitness;
-                this.gbestPosition = this.swarm[i].getBestPosition();
-            }
-        }
+        // not implemented
     }
 
     public double[] getGbestPosition() {
@@ -74,19 +126,6 @@ public class Population {
 
 
 
-    public double calculateEuclideanDistance(Particle x, Particle y){
-        double totalDistance = 0;
-        xpos = x.getPosition();
-        ypos = y.getPosition();
-        for(int i = 0; i < this.d; i++){
-            double xi 			=  xpos(i);
-            double yi 			=  ypos(i);
-            double distance	 	=  Math.pow(xi - yi, 2);
-            totalDistance 		+= distance;
-        }
-        double result = Math.sqrt(totalDistance);
-        return result;
-    }
 
 
 
