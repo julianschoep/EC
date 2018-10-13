@@ -1,8 +1,9 @@
 import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
+import java.util.Comparator;
 
-public class Particle {
+public class Particle implements Comparator<Particle>, Comparable<Particle>{
     private double fitness;
     private double bestFitness;
     private int nDimensions; // java way of var naming is first letter small, next word capital, no '_'
@@ -14,9 +15,10 @@ public class Particle {
     private double inertia = 0.7;
     private ContestEvaluation evaluation;
     private Random rnd;
+    private String name;
 
 
-    public Particle(int nDimensions, ContestEvaluation evaluation, Random rnd){
+    public Particle(int nDimensions, ContestEvaluation evaluation, Random rnd, String name){
         // initialize the particle
         this.nDimensions = nDimensions;
         this.evaluation = evaluation;
@@ -24,6 +26,7 @@ public class Particle {
         this.position = new double[this.nDimensions];
         this.bestPosition = new double[this.nDimensions];
         this.velocity = new double[this.nDimensions];
+        this.name = name;
 
         // initialize coordinates with random values between -5 and 5
         for (int i = 0; i < this.nDimensions; i++){
@@ -118,6 +121,17 @@ public class Particle {
     public void setFitness(double fitness){
         this.fitness = fitness;
     }
+
+    // COMPARATOR FUNCTIONS
+    public int compare(Particle a, Particle b){
+        return (int) (a.bestFitness - b.bestFitness);
+    }
+
+    public int compareTo(Particle a){
+        return (this.name).compareTo(a.name);
+    }
+
+
 
 }
 

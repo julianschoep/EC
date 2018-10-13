@@ -2,6 +2,8 @@ import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
 import java.util.Collections;
+import java.util.Arrays;
+
 public class Kmeans{
     private int k;
     private Particle[] particles;
@@ -18,40 +20,70 @@ public class Kmeans{
         this.particles = particles;
         this.evaluation = evaluation;
         this.rnd = rnd;
-        // select the initial K clusters, assuming particles arent ordered, selecting first three is random enough
+        this.d = d;
+
+        int[] chosen_particles =  new int[k];
+
+        // select the initial K clusters, as k random particles
         for(int i = 0; i < k; i++){
-            Subswarm cluster = new Subswarm(d,evaluation,rnd);
-            cluster.addParticle(particles[i]);
-            cluster.calculateCentroid();
-            clusters[i] = cluster;
+            boolean satisfied = false;
+            while(!satisfied){
+                int random_index = rnd.nextInt(particles.length); // choose random int between 0 and n particles
+                boolean index_alreadychosen = contains(chosen_particles,random_index);
+                if(!index_alreadychosen) { // index not yet chosen
+                    chosen_particles[i] = random_index;
+                    Subswarm cluster = new Subswarm(d, evaluation, rnd);
+                    cluster.addParticle(particles[random_index]);
+                    cluster.calculateCentroid();
+                    this.clusters[i] = cluster;
+                    satisfied = true;
+                }
+            }
         }
+
         // assign remaining particles
-        clearClusterAssignments(); // make sure not to add duplicate particles to clusters, run before assignment!
-        assignParticles(); // reassigning the initial particles will not yield different clusters
-        updateCentroids();
+        clearClusterAssignments(this.clusters); // make sure not to add duplicate particles to clusters, run before assignment!
+        assignParticles(this.clusters); // reassigning the initial particles will not yield different clusters
+        updateCentroids(this.clusters);
     }
 
-    public void clearClusterAssignments(){
-        for(int i = 0; i < k; i++){
-            this.clusters[i].removeAllParticles();
+    private boolean contains(int[] array, int contain){
+        for(int i = 0; i < array.length; i++){
+            if(array[i] == contain){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clearClusterAssignments(Subswarm[] clusters){
+        for(int i = 0; i < clusters.length; i++){
+            clusters[i].removeAllParticles();
 
         }
     }
 
     private Subswarm[] copyClusters(Subswarm[] clusters){
         // copies clusters
-        Subswarm[] clusterCopy = new Subswarm[this.k];
+        Subswarm[] clusterCopy = new Subswarm[clusters.length];
         assert clusters.length == this.k;
-        for(int i = 0; i < k; i++){
+        for(int i = 0; i < clusterCopy.length; i++){
             Particle[] cParticles = clusters[i].getParticles();
-            clusterCopy[i] = new Subswarm(cParticles, this.evaluation, this.rnd);
-            clusterCopy[i].calculateCentroid();
+            //print("og centroid: ",clusters[i].getCentroid()[0]);
+            //print("NUMBEr OF PARTICLES TO COPY",(double) cParticles.length);
+            clusterCopy[i] = new Subswarm(cParticles, this.d, this.evaluation, this.rnd);
+            //System.out.println("Calculating centroid...");
+            //print("copied particles number" ,clusterCopy[i].getParticles().length);
+            double[] test = clusterCopy[i].calculateCentroid();
+            //print("copy centroid: ",clusterCopy[i].getCentroid()[0]);
+            //print("calc centroid: ",test[0]);
+            //print("OG centroid: ", clusters[i].getCentroid()[0]);
         }
         return clusterCopy;
     }
 
-    private Subswarm[] assignParticles(){
-        Subswarm[] clusters = new Subswarm[this.k];
+    private Subswarm[] assignParticles(Subswarm[] clusters){
+
         for(int i = 0; i < this.particles.length; i++){
             // for each particle
             double[] position = this.particles[i].getPosition();
@@ -67,57 +99,87 @@ public class Kmeans{
                 }
             }
             // add particle to cluster with nearest centroid (aka mean)
+            //print("PARTICLE", i);
+            //print("ADDED TO CLUSTER:", best_cluster);
             clusters[best_cluster].addParticle(this.particles[i]);
         }
-        this.clusters = clusters;
+
         return clusters;
+    }
+
+    public void print(String text, double value){
+        String thing  = text + "%f";
+        System.out.println(String.format(thing,value));
+
     }
 
     public Subswarm[] cluster(){
         // ?
-        boolean satisfied = false;
-        while(!satisfied){
-            System.out.println("CLUSTER STEP!");
+        int step_ctr =0;
+        while(true){
+            //print("Cluster step", step_ctr);
+            step_ctr +=1 ;
             Subswarm[] oldClusters = copyClusters(this.clusters);
+            //print("old centroid",this.clusters[0].getCentroid()[0]);
             // asuming clusters are initialized,
             // clear the cluster assignments to avoid duplicate assignment
-            clearClusterAssignments();
-            // assign clusters according to means of previous step
-            Subswarm[] clusters = assignParticles();
-            updateCentroids();
+            clearClusterAssignments(this.clusters);
 
-            satisfied=true;
+            // assign clusters according to means of previous step
+            this.clusters = assignParticles(this.clusters);
+            updateCentroids(this.clusters);
+            //print("new centroid",this.clusters[0].getCentroid()[0]);
+
+            boolean satisfied=true;
             for(int i = 0; i < k; i++){ // check if clusters changed
-                double[] newCentroid = clusters[i].getCentroid();
+                double[] newCentroid = this.clusters[i].getCentroid();
                 double[] oldCentroid = oldClusters[i].getCentroid();
+                //print("new centroid 0", (double) newCentroid[0]);
+                //print("old centroid 0", (double) oldCentroid[0]);
                 boolean isEqual = true;
                 for(int dim = 0; dim < this.d; dim++) { // is centoid the same?
                     if (newCentroid[dim] != oldCentroid[dim]) {
-                        System.out.println(String.format("%f is not %f", newCentroid[dim],oldCentroid[dim]));
+                        //System.out.println(String.format("%f is not %f", newCentroid[dim],oldCentroid[dim]));
                         isEqual = false;
+                        //print("This dim is different", dim);
                     }
                 }
                 if(!isEqual){
                     satisfied=false; // centroid changed, so assignment changed, so clustering is still in progress.
+                    //System.out.println("Centroid changed!");
+                    //print("New one: ", newCentroid[0]);
+                    //print("Old one: ", oldCentroid[0]);
+                    break;
                 }
             }
+            if(satisfied){
+                //System.out.println("CLUSTERING DONE!");
+                break;
+            }
         }
+        print("CLUSTER VARIANCE ",this.getSquaredError());
         return this.clusters;
     }
 
+
+
+
     public double getSquaredError(){
+
         double sq_err = 0;
-        for(int i = 0; i < this.k; i++){
-            sq_err += this.clusters[i].getSquaredError();
+        //System.out.println("calculating squared error");
+        for(int i = 0; i < this.clusters.length; i++){
+            //print("Squared error",sq_err);
+            sq_err += Math.pow(this.clusters[i].getSquaredError(),0.5);
         }
         return sq_err;
     }
 
 
 
-    private void updateCentroids(){
+    private void updateCentroids(Subswarm[] clusters){
         for(int i = 0; i < this.k; i++){
-            this.clusters[i].calculateCentroid();
+            clusters[i].calculateCentroid();
         }
     }
 

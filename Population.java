@@ -24,7 +24,7 @@ public class Population {
         this.d = nDimensions;
 
         for(int i = 0; i < pSize; i++){
-            this.population[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles, calls eval!
+            this.population[i] = new Particle(nDimensions, this.evaluation, this.rnd, Integer.toString(i)); // randomly init N particles, calls eval!
         }
         this.updateGlobalFitness();
     }
@@ -35,13 +35,17 @@ public class Population {
         //      do 10 cluster iterations, select best on basis of error (implement error for cluster)
         // select best cluster based on BIC (implement BIC calculation)
 
-        Subswarm[] bestClusters;
+        Subswarm[] bestClusters = new Subswarm[0];
+        int bestK = -1;
         double bestBIC = Double.MAX_VALUE;
         for(int k = 2; k < this.pSize/2; k++){
 
             double bestError = Double.MAX_VALUE;
-            Subswarm[] bestClustersAtK;
+            Subswarm[] bestClustersAtK = new Subswarm[0];
+            print("k: ",k);
             for(int i = 0; i < 10; i++){
+
+                print("i: ", i);
                 Kmeans kmeans = new Kmeans(this.d, k, this.population,this.evaluation, this.rnd);
                 Subswarm[] clusters = kmeans.cluster();
                 double squaredError = kmeans.getSquaredError();
@@ -50,12 +54,17 @@ public class Population {
                     bestClustersAtK = clusters;
                 }
             }
+
             double BIC = calculateBIC(bestClustersAtK);
             if(BIC < bestBIC){
                 bestBIC = BIC;
+                bestK = k;
                 bestClusters = bestClustersAtK;
             }
         }
+        print("BEST CLUSTER VARIANCE",getSquaredError(bestClusters));
+        print("BEST BIC", bestBIC);
+        print("BEST K", bestK);
 
         // do cutting procedure
         // calculate average number of particles in the clusters
@@ -89,13 +98,15 @@ public class Population {
             Subswarm cluster = clusters[i];
             int Nj = clusters[i].getParticles().length;
             double sigmaSquared = clusters[i].getSquaredError();
-            likelihoodSum += ((Nj/2)*Math.log(2*Math.PI))-(((Nj*this.d)/2)*Math.log(sigmaSquared))
-                    - ((Nj-1)/2) + (Nj*Math.log(Nj));
+            likelihoodSum += ((-Nj/2)*Math.log(2*Math.PI))
+                            -(((Nj*this.d)/2)*Math.log(sigmaSquared))
+                            - ((Nj-1)/2)
+                            + (Nj*Math.log(Nj));
         }
 
         double likelihoodClusters = likelihoodSum - (N * Math.log(N));
         double BIC = likelihoodClusters - (p/2)*Math.log(N);
-        return BIC;
+        return Math.abs(BIC);
     }
 
     public void iterate() { // not very pretty...
@@ -108,11 +119,26 @@ public class Population {
         //this.updateGlobalFitness();
     }
 
+    public void print(String text, double value){
+        String thing  = text + "%f";
+        System.out.println(String.format(thing,value));
 
+    }
 
 
     public void updateGlobalFitness(){
         // not implemented
+    }
+
+    public double getSquaredError(Subswarm[] clusters){
+
+        double sq_err = 0;
+        //System.out.println("calculating squared error");
+        for(int i = 0; i < clusters.length; i++){
+            //print("Squared error",sq_err);
+            sq_err += clusters[i].getSquaredError();
+        }
+        return sq_err;
     }
 
     public double[] getGbestPosition() {

@@ -19,7 +19,7 @@ public class Swarm {
         this.rnd = rnd;
 
         for(int i = 0; i < pSize; i++){
-            this.swarm[i] = new Particle(nDimensions, this.evaluation, this.rnd); // randomly init N particles
+            this.swarm[i] = new Particle(nDimensions, this.evaluation, this.rnd, Integer.toString(i)); // randomly init N particles
         }
         this.updateGlobalFitness();
     }
