@@ -58,9 +58,20 @@ for file in sorted(os.listdir(outputDir)):
 			overall_df = pd.concat([overall_df, individual_df])
 		idx += 1
 
-
 print(overall_df.head())
 print(overall_df.shape)
-print(overall_df['seed'].value_counts())
 
+overall_df['Particles'] = pd.to_numeric(overall_df['Particles'])
+overall_df['Score'] = pd.to_numeric(overall_df['Score'])
+
+scores = overall_df['Score'].tolist()
+max(scores)
+
+for func in ['SphereEvaluation', 'BentCigarFunction', 'SchaffersEvaluation']:
+	print(func)
+	sub = overall_df[overall_df['Function'] == func]
+	scores = sub['Score'].tolist()
+	score_np = np.array(scores)
+	print(np.mean(score_np))
+	#print(max(scores))
 

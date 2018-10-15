@@ -1,0 +1,29 @@
+Number of particles: 500
+Iteration 0 4.806047696646068
+Iteration 1 7.05099520259318
+Iteration 2 7.05099520259318
+Iteration 3 7.085990763201519
+Iteration 4 8.307391644763474
+Iteration 5 9.08772692714922
+Iteration 6 9.290213196046537
+Iteration 7 9.547451736251093
+Iteration 8 9.67099751054078
+Iteration 9 9.706792738788558
+Iteration 10 9.765193122739433
+Iteration 11 9.876718204213496
+Iteration 12 9.910426843715634
+Iteration 13 9.931706059204771
+Iteration 14 9.950348487021175
+Iteration 15 9.96258409441489
+Iteration 16 9.970598003555294
+Iteration 17 9.983342493627664
+Iteration 18 9.992123373771364
+java.lang.NullPointerException
+	at Particle.updatePosition(Particle.java:68)
+	at Swarm.iterate(Swarm.java:31)
+	at player25.run(player25.java:73)
+	at ConsertTestBox.main(ConsertTestBox.java:97)
+Your code has thrown an Exception/Error!
+This would halt execution (the best score achieved so far would be assigned)
+Score: 9.992123373771364
+Runtime: 22ms

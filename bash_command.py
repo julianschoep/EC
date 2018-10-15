@@ -3,15 +3,15 @@ import numpy as np
 
 baseDir = os.getcwd()
 outputDir = os.path.join(baseDir, 'output')
-n_seeds = 5
+n_seeds = 100
 
 if os.path.isdir(outputDir) != True:
     os.mkdir(outputDir)
 
 # iterate through every function #BentCigarFunction KatsuuraEvaluation SphereEvaluation
-for func in ['SphereEvaluation']:#, 'BentCigarFunction', 'KatsuuraEvaluation']:
+for func in ['SphereEvaluation', 'BentCigarFunction', 'SchaffersEvaluation']:#'SphereEvaluation', 'BentCigarFunction', 'KatsuuraEvaluation']:
 	# iterate through parameter setting (numbers of particles)
-	for nP in [10]:
+	for nP in [100]:
 		# iterate through seeds as iterations per setting
 		for seedValue in np.linspace(1, n_seeds, n_seeds, dtype = np.int32):
 		    # java command 

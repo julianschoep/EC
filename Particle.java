@@ -66,6 +66,7 @@ public class Particle {
         //this.printArray(newPosition);
 
         double fitness =  (double) this.evaluation.evaluate(newPosition);
+        this.fitness = fitness;
         //System.out.println(fitness);
 
         // check if position update is better than best position
