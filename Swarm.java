@@ -48,8 +48,6 @@ public class Swarm {
     }
 
     public void getParticleFitness(){
-                
-
         for (int i=0; i < this.pSize; i++){
             double particleFitness = swarm[i].getFitness();
             System.out.print("Particle nr. ");

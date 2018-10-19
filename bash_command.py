@@ -3,13 +3,13 @@ import numpy as np
 
 baseDir = os.getcwd()
 outputDir = os.path.join(baseDir, 'output')
-n_seeds = 100
+n_seeds = 10
 
 if os.path.isdir(outputDir) != True:
     os.mkdir(outputDir)
 
 # iterate through every function #BentCigarFunction KatsuuraEvaluation SphereEvaluation
-for func in ['SphereEvaluation', 'BentCigarFunction', 'SchaffersEvaluation']:#'SphereEvaluation', 'BentCigarFunction', 'KatsuuraEvaluation']:
+for func in ['KatsuuraEvaluation']:#'SphereEvaluation', 'BentCigarFunction', 'KatsuuraEvaluation', 'SchaffersEvaluation']:
 	# iterate through parameter setting (numbers of particles)
 	for nP in [100]:
 		# iterate through seeds as iterations per setting
