@@ -7,6 +7,7 @@ import java.util.Properties;
 public class player25 implements ContestSubmission
 {
 	private int nParticles = 100;
+	private int c = Integer.parseInt(System.getProperty("var"));
     private int nDimensions = 10;
     private double[] bestGlobalPosition;
     private double bestGlobalFitness;
@@ -56,26 +57,43 @@ public class player25 implements ContestSubmission
     
 	public void run()
 	{
-		// Run your algorithm here
+		// Run your algorithm heres
         int evals = 0;
-
+		System.out.print("Number of particles: ");
+		System.out.println(this.nParticles);
         // init population
         Population population = new Population(nParticles, nDimensions,  evaluation_, rnd_);
         
         // Calculate and save fitness per particle
         //while(evals < evaluations_limit_) {
         while(evals < evaluations_limit_) {
-			if(evals % 2 == 0){ // every C steps do niching operation
-				System.out.println("IDENTIFYING NICHES");
+
+			if((evals % c == 0)){ // every C steps do niching operation
+                //System.out.println("___________________________________");
+				//System.out.println("IDENTIFYING NICHES");
 				population.identifyNiches();
 			}
+			population.updateGlobalFitness();
+			//population.iterate();
         	//System.out.println(evals);
 			//System.out.println(evaluations_limit_);
 			// update particle's velocity
-			population.iterate();
+			population.iterate(); // updates positions
 			double fitness = population.getGbestFitness();
+			//System.out.println(String.format("Best fitness: %f",fitness));
 			bestGlobalPosition = population.getGbestPosition();
-
+			System.out.println(" ");
+			System.out.print("Iteration ");
+			System.out.print(evals);
+			System.out.print(" ");
+			System.out.println(fitness);
+			//System.out.println(" ");
+			for(int i = 0; i < population.population.length; i++){
+				String line = String.format("Particle nr. %d: ",
+											population.population[i].name);
+				System.out.print(line);
+				System.out.println(population.population[i].fitness);
+			}
 			//double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 			// Check fitness of unknown fuction
 			//double fitness = (double) evaluation_.evaluate(child);
@@ -83,6 +101,7 @@ public class player25 implements ContestSubmission
 			//double fitness = (double) evaluation_.evaluate(bestGlobalPosition);
 			//System.out.println(fitness);
 			evals++;
+			//System.out.println(evals);
 		}
 
         /**

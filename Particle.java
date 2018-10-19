@@ -2,23 +2,26 @@ import org.vu.contest.ContestSubmission;
 import org.vu.contest.ContestEvaluation;
 import java.util.Random;
 import java.util.Comparator;
+import java.lang.Double;
+import java.lang.Math;
 
 public class Particle implements Comparator<Particle>, Comparable<Particle>{
-    private double fitness;
-    private double bestFitness;
-    private int nDimensions; // java way of var naming is first letter small, next word capital, no '_'
-    private double[] position;
-    private double[] velocity;
-    private double[] bestPosition;
-    private double c1 = 2;
-    private double c2 = 2;
-    private double inertia = 0.7;
-    private ContestEvaluation evaluation;
-    private Random rnd;
-    private String name;
+    public double fitness;
+    public double bestFitness;
+    public int nDimensions; // java way of var naming is first letter small, next word capital, no '_'
+    public double[] position;
+    public double[] velocity;
+    public double[] bestPosition;
+    public double c1 = 2;
+    public double c2 = 2;
+    public double inertia = 0.7;
+    public ContestEvaluation evaluation;
+    public Random rnd;
+    public int name;
+    public double velocityClamp;
 
 
-    public Particle(int nDimensions, ContestEvaluation evaluation, Random rnd, String name){
+    public Particle(int nDimensions, ContestEvaluation evaluation, Random rnd, int name){
         // initialize the particle
         this.nDimensions = nDimensions;
         this.evaluation = evaluation;
@@ -27,6 +30,8 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
         this.bestPosition = new double[this.nDimensions];
         this.velocity = new double[this.nDimensions];
         this.name = name;
+        this.velocityClamp = -1.0;
+
 
         // initialize coordinates with random values between -5 and 5
         for (int i = 0; i < this.nDimensions; i++){
@@ -45,6 +50,11 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
         this.fitness = this.bestFitness = (double) evaluation.evaluate(this.position);
     }
 
+    public void setVelocityClamp(double clamp){
+        //System.out.println("RECEIVED VELOCITY CLAMP!");
+        this.velocityClamp = clamp;
+    }
+
 
     public void updatePosition(double[] gBestPosition){
         double[] oldPosition = this.position;
@@ -57,7 +67,17 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
         for (int i = 0; i < this.nDimensions; i++){
             double r1 = this.rnd.nextDouble()/2;
             double r2 = this.rnd.nextDouble()/2;
-            newVelocity[i] = (inertia * oldVelocity[i]) + (c1 * (this.bestPosition[i] - oldPosition[i]) * r1) + (c2 * (gBestPosition[i] - oldPosition[i]) * r2);
+            double newV = (inertia * oldVelocity[i])
+                           + (c1 * (this.bestPosition[i] - oldPosition[i]) * r1)
+                           + (c2 * (gBestPosition[i] - oldPosition[i]) * r2);
+            if(this.velocityClamp > 0.01){
+                //System.out.println("Velocity clamp applied");
+                //System.out.println(this.velocityClamp);
+                newVelocity[i] = Math.min(newV, this.velocityClamp);
+            }else{
+                newVelocity[i] = newV;
+            }
+
         }
         //printArray(newVelocity);
 
@@ -78,6 +98,7 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
         }
         this.position = newPosition;
         this.velocity = newVelocity;
+        this.fitness = fitness;
     }
 
 
@@ -87,6 +108,10 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
             System.out.print(' ');
         }
         System.out.println(" ");
+    }
+
+    public void dummyFunction(){
+        this.bestFitness = this.name;
     }
 
 
@@ -124,13 +149,33 @@ public class Particle implements Comparator<Particle>, Comparable<Particle>{
 
     // COMPARATOR FUNCTIONS
     public int compare(Particle a, Particle b){
-        return (int) (a.bestFitness - b.bestFitness);
+        if((double) a.getBestFitness() > (double) b.getBestFitness()){
+            System.out.println("A larger than B");
+            return 1;
+        }else if( (double) a.getBestFitness() < (double) b.getBestFitness()){
+            System.out.println("A smaller than B");
+            return -1;
+        }else{
+
+            return 0;
+        }
     }
 
-    public int compareTo(Particle a){
-        return (this.name).compareTo(a.name);
+    public int compareTo(Particle b){
+        return Double.valueOf(this.bestFitness).compareTo(Double.valueOf(b.getBestFitness()));
     }
 
+    public int getNDims(){
+        return this.nDimensions;
+    }
+
+    public ContestEvaluation getEvaluation() {
+        return this.evaluation;
+    }
+
+    public Random getRnd() {
+        return this.rnd;
+    }
 
 
 }
