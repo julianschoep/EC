@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class player25 implements ContestSubmission
 {
-	private int nParticles = 100;
+	private int nParticles = 500;
 	private int c = Integer.parseInt(System.getProperty("var"));
     private int nDimensions = 10;
     private double[] bestGlobalPosition;
@@ -68,10 +68,14 @@ public class player25 implements ContestSubmission
         //while(evals < evaluations_limit_) {
         while(evals < evaluations_limit_) {
 
-			if((evals % c == 0)){ // every C steps do niching operation
+			if((evals % this.c == 0)){ // every C steps do niching operation
                 //System.out.println("___________________________________");
 				//System.out.println("IDENTIFYING NICHES");
-				population.identifyNiches();
+                if(this.c > 0){
+				    population.identifyNiches();
+                }else{
+                    System.out.println("so no niching");
+                }
 			}
 			population.updateGlobalFitness();
 			//population.iterate();
@@ -88,12 +92,15 @@ public class player25 implements ContestSubmission
 			System.out.print(" ");
 			System.out.println(fitness);
 			//System.out.println(" ");
-			for(int i = 0; i < population.population.length; i++){
-				String line = String.format("Particle nr. %d: ",
-											population.population[i].name);
-				System.out.print(line);
-				System.out.println(population.population[i].fitness);
+			if(false){
+				for(int i = 0; i < population.population.length; i++){
+					String line = String.format("Particle nr. %d: ",
+							population.population[i].name);
+					System.out.print(line);
+					System.out.println(population.population[i].fitness);
+				}
 			}
+
 			//double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 			// Check fitness of unknown fuction
 			//double fitness = (double) evaluation_.evaluate(child);
@@ -104,60 +111,5 @@ public class player25 implements ContestSubmission
 			//System.out.println(evals);
 		}
 
-        /**
-		Initialization
-		1. initialize particle xi(0) from swarm (best drawn from uniform distribution with constraints/limits [-5, 5])
-		2. particles best position = particles current (= starting) position
-		3. Calculate fitness of each particle and if fj(x) > fi(x), initialize fj(x) as best global position as g = xj(0)
-
-		Until stopping criterion is met, do following:
-		1. Update the particle's' velocity according to: v(t+1) = intertia(0.7)*v(t) + c1(p - x(t)) * R1 + c2(g - x(t)) * R2 (usually, c1=c2=2)
-			On the other hand, R1 and R2 are two dxd diagonal matrices of
-			random numbers generated from a uniform distribution in [0,1],
-			so that both the social and the cognitive components have a stochastic
-			influence on the velocity update rule
-
-			Note that matrices R1t and R2t are generated at each iteration for each particle independently
-
-		2. Update the particle's' position according to: x(t+1) = x(t) + v(t+1)
-		3. Evaluate fitness of particle f(xi(t+1))
-		4. if f(xi(t+1)) > f(xi(t)): update personal best position
-		5. if f(xi(t+1)) > g: update global best position
-
-		At the end, best position is represented by g!
-
-
-
-
-
-		each particle is 10-dimensional array with real-values, randomly initialized
-		fitness calculation: put values of particle (10 values of array) into function and get number
-
-		update particle position based on formula: x(t+1) = x(t) + v(t+1)
-
-        */
-		/**
-		 * the first one, defined the inertia or momentum prevents the particle
-		 * from drastically changing direction, by keeping track of the previous
-		 * flow direction; the second term, called the cognitive com- ponent, accounts
-		 * for the tendency of particles to return to their own pre- viously found best positions;
-		 * the last one, named the social component, identifies the propensity of a particle to
-		 * move towards the best position of the whole swarm (or of a local neighborhood of the
-		 * particle, depend- ing on whether a global or partial PSO is implemented). Based on these
-		 * considerations, the velocity of the ith particle is defined as:
-		 *
-		 * v(t+1) = v(t) + c1(p - x(t)) * R1 + c2(g - x(t)) * R2
- 		 */
-
-		/**
-        while(evals<evaluations_limit_){
-        	//
-            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-            // Check fitness of unknown fuction
-            Double fitness = (double) evaluation_.evaluate(child);
-            evals++;
-            // Select survivors
-        }
-		 */
 	}
 }

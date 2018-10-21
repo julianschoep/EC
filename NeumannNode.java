@@ -15,6 +15,7 @@ public class NeumannNode extends Particle{
         this.GlobalBestFitness = this.bestFitness;
         this.GlobalBestPosition = this.bestPosition;
     }
+
     public void reportNeighbours(){
         assert this.neighbourPointer == 2: "Neigbourhood isn't filled yet.. Can't report.";
         int[] names = new int[3];

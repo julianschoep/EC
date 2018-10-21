@@ -31,6 +31,7 @@ public class Kmeans{
         this.rnd = rnd;
         this.d = d;
         this.name = String.format("%d-%d",k,runID);
+
         //System.out.println("Init FOR K: "+Integer.toString(k));
         //System.out.println("KMEANS "+this.name+" CREATED!");
 
